@@ -24,3 +24,7 @@ export default async function handler(req, res) {
     res.status(405).send("Method Not Allowed");
   }
 }
+if (!file) {
+  return res.status(400).json({ error: "No file provided." });
+}
+
