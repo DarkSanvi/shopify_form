@@ -1,21 +1,26 @@
-const cloudinary = require('cloudinary').v2;
-
-cloudinary.config({
-  cloud_name: 'desyvupiz',
-  api_key: '478436724351967',
-  api_secret: '081gu3Qmsa9Eb0hm7DudFw2II-g',
-});
+import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const file = req.body.file; // Expect base64 or file data
+    const { file } = req.body; // Expect base64 or file data
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'shopify_upload'); // Replace with your upload preset name
 
     try {
-      const result = await cloudinary.uploader.upload(file, {
-        folder: 'uploads',
+      const response = await fetch('https://api.cloudinary.com/v1_1/desyvupiz/image/upload', {
+        method: 'POST',
+        body: formData,
       });
 
-      res.status(200).json({ url: result.secure_url });
+      const result = await response.json();
+
+      if (response.ok) {
+        res.status(200).json({ url: result.secure_url });
+      } else {
+        res.status(500).json({ error: result.error.message });
+      }
     } catch (error) {
       console.error('Error uploading to Cloudinary:', error);
       res.status(500).json({ error: 'Failed to upload image.' });
