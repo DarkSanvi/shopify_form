@@ -1,29 +1,26 @@
-import cloudinary from 'cloudinary';
+const cloudinary = require('cloudinary').v2;
 
-// Configure Cloudinary with environment variables
-cloudinary.v2.config({
-  cloud_name: process.env.desyvupiz,
-  api_key: process.env.478436724351967,
-  api_secret: process.env.081gu3Qmsa9Eb0hm7DudFw2II-g,
+cloudinary.config({
+  cloud_name: 'desyvupiz',
+  api_key: '478436724351967',
+  api_secret: '081gu3Qmsa9Eb0hm7DudFw2II-g',
 });
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method Not Allowed. Use GET.' });
-  }
+  if (req.method === 'POST') {
+    const file = req.body.file; // Expect base64 or file data
 
-  try {
-    // Attempt to fetch a list of resources to test the connection
-    const result = await cloudinary.v2.api.resources({ max_results: 1 });
-    res.status(200).json({
-      message: 'Cloudinary connection successful!',
-      resources: result.resources,
-    });
-  } catch (error) {
-    console.error('Cloudinary connection error:', error);
-    res.status(500).json({
-      error: 'Failed to connect to Cloudinary. Check your credentials.',
-      details: error.message,
-    });
+    try {
+      const result = await cloudinary.uploader.upload(file, {
+        folder: 'uploads',
+      });
+
+      res.status(200).json({ url: result.secure_url });
+    } catch (error) {
+      console.error('Error uploading to Cloudinary:', error);
+      res.status(500).json({ error: 'Failed to upload image.' });
+    }
+  } else {
+    res.status(405).send('Method Not Allowed');
   }
 }
