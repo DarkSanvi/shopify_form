@@ -1,9 +1,9 @@
 import cloudinary from "cloudinary";
 
 cloudinary.v2.config({
-  cloud_name: "your-cloud-name", // Replace with your Cloudinary Cloud Name
-  api_key: "your-api-key",       // Replace with your Cloudinary API Key
-  api_secret: "your-api-secret", // Replace with your Cloudinary API Secret
+  cloud_name: "desyvupiz", // Replace with your Cloudinary Cloud Name
+  api_key: 478436724351967",       // Replace with your Cloudinary API Key
+  api_secret: "081gu3Qmsa9Eb0hm7DudFw2II-g", // Replace with your Cloudinary API Secret
 });
 
 export default async function handler(req, res) {
